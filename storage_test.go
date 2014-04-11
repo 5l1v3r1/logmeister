@@ -1,4 +1,4 @@
-package main
+package daemon
 
 import (
 	"labix.org/v2/mgo/bson"
@@ -29,6 +29,20 @@ func TestNewStore(t *testing.T) {
 	s := NewStoreHelper(t)
 	s.Close()
 	return
+}
+
+func TestStoreEvent(t *testing.T) {
+	s := NewStoreHelper(t)
+	defer s.Close()
+
+	e, err := NewEvent("Test", "Test", "Tested", "Lentils")
+	if err != nil {
+		t.Fatalf("Error creating new event: %v", err)
+	}
+	err = s.StoreEvent(e)
+	if err != nil {
+		t.Errorf("Error storing event: %v", err)
+	}
 }
 
 func TestNewStoreBadServerUrl(t *testing.T) {

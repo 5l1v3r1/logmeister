@@ -1,15 +1,16 @@
-package main
+package daemon
 
 import (
 	"labix.org/v2/mgo"
-	//"labix.org/v2/mgo/bson"
+	"labix.org/v2/mgo/bson"
 )
 
 type Store struct {
-	session *mgo.Session
+	Session *mgo.Session
 	DB      *mgo.Database
 }
 
+// Store handles
 func NewStore(url string, database string) (s *Store, err error) {
 	session, err := mgo.Dial(url)
 	if err != nil {
@@ -20,10 +21,23 @@ func NewStore(url string, database string) (s *Store, err error) {
 }
 
 func (s *Store) Close() {
-	s.session.Close()
+	s.Session.Close()
 }
 
-//func (s *Store)
+// Event Store Functions
+func (s *Store) StoreEvent(e *Event) (err error) {
+	return s.Insert(EventCollection, e)
+}
+
+// Server Store Functions
+func (s *Store) StoreServer(server *Server) (err error) {
+	return s.Insert(ServerCollection, server)
+}
+
+func (s *Store) UpdateServer(server *Server) (info *mgo.ChangeInfo, err error) {
+	selector := bson.M{"IP": server.IP, "Name": server.Name}
+	return s.Upsert(ServerCollection, selector, server)
+}
 
 // Simple wrappers to allow possible change of DBMS.
 func (s *Store) Insert(collection string, docs ...interface{}) (err error) {
