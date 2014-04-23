@@ -3,6 +3,7 @@ package daemon
 import (
 	"labix.org/v2/mgo"
 	"labix.org/v2/mgo/bson"
+  "github.com/juju/errgo"
 )
 
 type Store struct {
@@ -14,7 +15,7 @@ type Store struct {
 func NewStore(url string, database string) (s *Store, err error) {
 	session, err := mgo.Dial(url)
 	if err != nil {
-		return nil, err
+		return nil, errgo.Mask(err)
 	}
 	s = &Store{session, session.DB(database)}
 	return s, nil
@@ -26,28 +27,34 @@ func (s *Store) Close() {
 
 // Event Store Functions
 func (s *Store) StoreEvent(e *Event) (err error) {
-	return s.Insert(EventCollection, e)
+	err = s.Insert(EventCollection, e)
+  return errgo.Mask(err)
 }
 
 // Server Store Functions
 func (s *Store) StoreServer(server *Server) (err error) {
-	return s.Insert(ServerCollection, server)
+	err = s.Insert(ServerCollection, server)
+  return errgo.Mask(err)
 }
 
 func (s *Store) UpdateServer(server *Server) (info *mgo.ChangeInfo, err error) {
 	selector := bson.M{"IP": server.IP, "Name": server.Name}
-	return s.Upsert(ServerCollection, selector, server)
+	info, err = s.Upsert(ServerCollection, selector, server)
+  return info, errgo.Mask(err)
 }
 
 // Simple wrappers to allow possible change of DBMS.
 func (s *Store) Insert(collection string, docs ...interface{}) (err error) {
-	return s.DB.C(collection).Insert(docs)
+	err = s.DB.C(collection).Insert(docs)
+  return errgo.Mask(err)
 }
 
 func (s *Store) Upsert(collection string, selector interface{}, update interface{}) (info *mgo.ChangeInfo, err error) {
-	return s.DB.C(collection).Upsert(selector, update)
+	info, err = s.DB.C(collection).Upsert(selector, update)
+  return info, errgo.Mask(err)
 }
 
 func (s *Store) DropCollection(collection string) (err error) {
-	return s.DB.C(collection).DropCollection()
+	err = s.DB.C(collection).DropCollection()
+  return errgo.Mask(err)
 }

@@ -17,7 +17,7 @@ func NewStoreHelper(t *testing.T) (s *Store) {
 	s, err := NewStore("localhost", "testing")
 
 	if err != nil {
-		t.Fatalf("Error creating a new store: %v", err)
+		t.Fatalf("Error creating a new store: %#v", err)
 	}
 	if s == nil {
 		t.Fatalf("Error creating new store: nil pointer returned with no error.")
@@ -37,11 +37,11 @@ func TestStoreEvent(t *testing.T) {
 
 	e, err := NewEvent("Test", "Test", "Tested", "Lentils")
 	if err != nil {
-		t.Fatalf("Error creating new event: %v", err)
+		t.Fatalf("Error creating new event: %#v", err)
 	}
 	err = s.StoreEvent(e)
 	if err != nil {
-		t.Errorf("Error storing event: %v", err)
+		t.Errorf("Error storing event: %#v", err)
 	}
 }
 
@@ -54,7 +54,7 @@ func TestNewStoreBadServerUrl(t *testing.T) {
 		t.Fatalf("No error. Should have returned an error or timeout.")
 	}
 	if s != nil {
-		t.Errorf("Should return nil object. Returned: %v")
+		t.Errorf("Should return nil object. Returned: %#v")
 	}
 	return
 }
@@ -66,7 +66,7 @@ func TestInsert(t *testing.T) {
 	d := &TestData{"1", "test1", "InsertTest"}
 	err := s.Insert(TestCollection, d)
 	if err != nil {
-		t.Errorf("Error inserting into collection: %v", err)
+		t.Errorf("Error inserting into collection: %#v", err)
 	}
 	return
 }
@@ -79,7 +79,7 @@ func TestUpsert(t *testing.T) {
 	update := &TestData{"2", "test2", "UpsertTest"}
 	_, err := s.Upsert(TestCollection, selector, update)
 	if err != nil {
-		t.Errorf("Error upserting into collection with selector %v and update data %v: %v", selector, update, err)
+		t.Errorf("Error upserting into collection with selector %v and update data %v: %#v", selector, update, err)
 	}
 	return
 }
@@ -89,7 +89,7 @@ func TestDropCollection(t *testing.T) {
 	defer s.Close()
 	err := s.DropCollection(TestCollection)
 	if err != nil {
-		t.Errorf("Error dropping collection %s: %v", TestCollection, err)
+		t.Errorf("Error dropping collection %s: %#v", TestCollection, err)
 	}
 	return
 }
