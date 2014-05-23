@@ -84,6 +84,7 @@ func TestUpsert(t *testing.T) {
 	return
 }
 
+/*
 func TestDropCollection(t *testing.T) {
 	s := NewStoreHelper(t)
 	defer s.Close()
@@ -93,3 +94,4 @@ func TestDropCollection(t *testing.T) {
 	}
 	return
 }
+*/

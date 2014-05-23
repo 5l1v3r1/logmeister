@@ -1,9 +1,9 @@
 package daemon
 
 import (
+	"github.com/juju/errgo"
 	"labix.org/v2/mgo"
 	"labix.org/v2/mgo/bson"
-  "github.com/juju/errgo"
 )
 
 type Store struct {
@@ -26,35 +26,40 @@ func (s *Store) Close() {
 }
 
 // Event Store Functions
-func (s *Store) StoreEvent(e *Event) (err error) {
+func (s *Store) StoreEvent(e Event) (err error) {
 	err = s.Insert(EventCollection, e)
-  return errgo.Mask(err)
+	return errgo.Mask(err)
 }
 
 // Server Store Functions
 func (s *Store) StoreServer(server *Server) (err error) {
 	err = s.Insert(ServerCollection, server)
-  return errgo.Mask(err)
+	return errgo.Mask(err)
 }
 
 func (s *Store) UpdateServer(server *Server) (info *mgo.ChangeInfo, err error) {
 	selector := bson.M{"IP": server.IP, "Name": server.Name}
 	info, err = s.Upsert(ServerCollection, selector, server)
-  return info, errgo.Mask(err)
+	return info, errgo.Mask(err)
 }
 
 // Simple wrappers to allow possible change of DBMS.
 func (s *Store) Insert(collection string, docs ...interface{}) (err error) {
-	err = s.DB.C(collection).Insert(docs)
-  return errgo.Mask(err)
+	for _, doc := range docs {
+		err = s.DB.C(collection).Insert(doc)
+		if err != nil {
+			return errgo.Mask(err)
+		}
+	}
+	return nil
 }
 
 func (s *Store) Upsert(collection string, selector interface{}, update interface{}) (info *mgo.ChangeInfo, err error) {
 	info, err = s.DB.C(collection).Upsert(selector, update)
-  return info, errgo.Mask(err)
+	return info, errgo.Mask(err)
 }
 
 func (s *Store) DropCollection(collection string) (err error) {
 	err = s.DB.C(collection).DropCollection()
-  return errgo.Mask(err)
+	return errgo.Mask(err)
 }
