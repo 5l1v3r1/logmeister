@@ -15,6 +15,7 @@ type Event struct {
 	Data   string
 }
 
+// Creates a new event with the given parameters and makes sure no required fields are blank.
 func NewEvent(action, target, result, data string) (e *Event, err error) {
 	if action == "" {
 		err = errors.New(EmptyActionError)
