@@ -1,4 +1,4 @@
-package daemon
+package logmeister
 
 import (
 	"errors"
@@ -15,7 +15,7 @@ type Event struct {
 	Data   string
 }
 
-func NewEvent(action, target, result, data string) (e Event, err error) {
+func NewEvent(action, target, result, data string) (e *Event, err error) {
 	if action == "" {
 		err = errors.New(EmptyActionError)
 	} else if target == "" {
@@ -23,7 +23,7 @@ func NewEvent(action, target, result, data string) (e Event, err error) {
 	} else if result == "" {
 		err = errors.New(EmptyResultError)
 	} else {
-		e = Event{action, target, result, data}
+		e = &Event{action, target, result, data}
 	}
 	return
 }

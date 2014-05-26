@@ -1,4 +1,4 @@
-package daemon
+package logmeister
 
 import (
 	"labix.org/v2/mgo/bson"
@@ -84,7 +84,6 @@ func TestUpsert(t *testing.T) {
 	return
 }
 
-/*
 func TestDropCollection(t *testing.T) {
 	s := NewStoreHelper(t)
 	defer s.Close()
@@ -94,4 +93,3 @@ func TestDropCollection(t *testing.T) {
 	}
 	return
 }
-*/

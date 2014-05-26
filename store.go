@@ -1,9 +1,8 @@
-package daemon
+package logmeister
 
 import (
 	"github.com/juju/errgo"
 	"labix.org/v2/mgo"
-	"labix.org/v2/mgo/bson"
 )
 
 type Store struct {
@@ -26,21 +25,9 @@ func (s *Store) Close() {
 }
 
 // Event Store Functions
-func (s *Store) StoreEvent(e Event) (err error) {
+func (s *Store) StoreEvent(e *Event) (err error) {
 	err = s.Insert(EventCollection, e)
 	return errgo.Mask(err)
-}
-
-// Server Store Functions
-func (s *Store) StoreServer(server *Server) (err error) {
-	err = s.Insert(ServerCollection, server)
-	return errgo.Mask(err)
-}
-
-func (s *Store) UpdateServer(server *Server) (info *mgo.ChangeInfo, err error) {
-	selector := bson.M{"IP": server.IP, "Name": server.Name}
-	info, err = s.Upsert(ServerCollection, selector, server)
-	return info, errgo.Mask(err)
 }
 
 // Simple wrappers to allow possible change of DBMS.

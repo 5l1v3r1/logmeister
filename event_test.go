@@ -1,11 +1,11 @@
-package daemon
+package logmeister
 
 import "testing"
 
-const TestAction = "ping"
-const TestTarget = "test_target"
-const TestResult = "200"
-const TestString = "Winter is Coming"
+const TestAction = "BREW"
+const TestTarget = "Teavana"
+const TestResult = "418"
+const TestString = "Accept-Additions: Whiskey, Cream"
 
 func TestNewEvent(t *testing.T) {
 	test_data := TestString
