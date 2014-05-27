@@ -16,6 +16,7 @@ type Event struct {
 }
 
 // Creates a new event with the given parameters and makes sure no required fields are blank.
+// General usage: Set the action against a target with given result. Often storing extra data as json.
 func NewEvent(action, target, result, data string) (e *Event, err error) {
 	if action == "" {
 		err = errors.New(EmptyActionError)
