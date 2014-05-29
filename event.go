@@ -2,6 +2,7 @@ package logmeister
 
 import (
 	"errors"
+	"time"
 )
 
 const EmptyActionError = "Action must not be empty."
@@ -9,6 +10,7 @@ const EmptyTargetError = "Target must not be empty."
 const EmptyResultError = "Result must not be empty."
 
 type Event struct {
+	Time   int64
 	Action string
 	Target string
 	Result string
@@ -25,7 +27,7 @@ func NewEvent(action, target, result, data string) (e *Event, err error) {
 	} else if result == "" {
 		err = errors.New(EmptyResultError)
 	} else {
-		e = &Event{action, target, result, data}
+		e = &Event{time.Now().Unix(), action, target, result, data}
 	}
 	return
 }
