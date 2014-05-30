@@ -47,6 +47,13 @@ func TestEmptyResult(t *testing.T) {
 	EmptyTestHelper(t, e, err, EmptyResultError)
 }
 
+func TestEmptyData(t *testing.T) {
+	_, err := NewEvent("test", "asdf", "asdf", "")
+	if err != nil {
+		t.Errorf("Should not be an error, instead got: %#v", err)
+	}
+}
+
 func EmptyTestHelper(t *testing.T, e *Event, err error, error_string string) {
 	if e != nil {
 		t.Errorf("e2: Should have returned nil.")
