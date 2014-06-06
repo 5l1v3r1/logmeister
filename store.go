@@ -30,11 +30,11 @@ func (s *Store) StoreEvent(e *Event) error {
 	return errgo.Mask(err)
 }
 
-// Last10Events returns the last 10 events recorded in the store. If less than 10 are found,
+// LastNEvents returns the last N events recorded in the store. If less than N are found,
 // the size of the slice returned will be the amount actually found.
-func (s *Store) Last10Events() ([]Event, error) {
+func (s *Store) LastNEvents(n int) ([]Event, error) {
 	c := s.DB.C(EventCollection)
-	iter := c.Find(nil).Sort("-_id").Limit(10).Iter() // Return last 10 events.
+	iter := c.Find(nil).Sort("-_id").Limit(n).Iter() // Return last n events.
 	events := []Event{}
 	err := iter.All(&events)
 	if err != nil {
